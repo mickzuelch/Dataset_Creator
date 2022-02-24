@@ -1,0 +1,9 @@
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\bin\Debug\Money_dataset_creator.exe.config
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\bin\Debug\Money_dataset_creator.exe
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\bin\Debug\Money_dataset_creator.pdb
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.csprojAssemblyReference.cache
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.Properties.Resources.resources
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.csproj.GenerateResource.cache
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.csproj.CoreCompileInputs.cache
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.exe
+C:\Users\black\source\repos\Money_dataset_creator\Money_dataset_creator\obj\Debug\Money_dataset_creator.pdb
