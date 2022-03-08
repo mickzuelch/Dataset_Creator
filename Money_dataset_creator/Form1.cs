@@ -28,10 +28,12 @@ namespace dataset_creator
 
             sampleNames.Size = new Size(100, 35);
             sampleNames.Location = new Point(10, 10);
+            sampleNames.Text = "Name_Of_samples";
             this.Controls.Add(sampleNames);
 
             numberTestSamples.Size = new Size(100, 35);
             numberTestSamples.Location = new Point(110 + 100, 10);
+            numberTestSamples.Text = "16";
             this.Controls.Add(numberTestSamples);
 
             pb.Size = new Size(this.ClientSize.Width, 30);
@@ -57,7 +59,7 @@ namespace dataset_creator
 
             for (int i = coreCalcRange * (id - 1); i < (coreCalcRange * (id - 1)) + coreCalcRange; i++)
             {
-                createNewSet(name, i);
+                createNewSet(name, i, false);
             }
         }
 
@@ -66,7 +68,7 @@ namespace dataset_creator
             name = sampleNames.Text;
             int samples = Convert.ToInt32(numberTestSamples.Text);
             int numCores = Environment.ProcessorCount;
- 
+
             pb.Maximum = samples;
             pb.Value = 0;
             pb.Step = samples / numCores;
@@ -79,13 +81,13 @@ namespace dataset_creator
 
         }
 
-        private void createNewSet(string name, int offsetNumber)
+        private void createNewSet(string name, int offsetNumber, bool generateBBoxFiles)
         {
             int imWidth = 0;
             int imHeight = 0;
             int format = 0;
-            string suffixPath = @"PATH_TO_SAVE";
-            string backgroundPath = @"PATH_TO_BACKGROUNDS";
+            string suffixPath = @"C:\Users\Mick\Desktop\geldbilder";
+            string backgroundPath = @"C:\Users\Mick\Desktop\backgrounds";
             string[] fileNames = Directory.GetFiles(suffixPath, "*");
             string[] backgrounds = Directory.GetFiles(backgroundPath, "*");
             Random rnd = new Random(DateTime.Now.Millisecond);
@@ -136,101 +138,124 @@ namespace dataset_creator
 
 
             int numObjects = rnd.Next(1, 10);
-            for (int k = 0; k < numObjects; k++)
+            using (Graphics g = Graphics.FromImage(bm))
             {
-                for (int i = 0; i < 10000; i++)
+                //g.DrawImage(tmpImage,0,0);
+                SolidBrush sliderBrush = new SolidBrush(Color.Purple);
+
+                for (int k = 0; k < numObjects; k++)
                 {
-                    for (int j = 0; j < 10000; j++)
+                    for (int i = 0; i < 10000; i++)
                     {
-                        int b = i * j + rnd.Next(0, i);
-                    }
-                }
-                rnd = new Random(DateTime.Now.Millisecond + imHeight);
-                int randomFile = rnd.Next(0, fileNames.Length);
-                texts.Add(fileNames[randomFile]);
-
-                objects.Add(new Bitmap(fileNames[randomFile]));
-                if (scaleTrue == 0)
-                {
-                    objects[k] = new Bitmap(objects[k], new Size((int)((float)objects[k].Width / objectScale), (int)((float)objects[k].Height / objectScale)));
-                }
-
-                int randomX = -1;
-                int randomY = -1;
-
-                int rotate = rnd.Next(0, 4);
-                RotateFlipType r;
-                switch (rotate)
-                {
-                    case 0:
-                        r = RotateFlipType.Rotate90FlipNone;
-                        break;
-                    case 1:
-                        r = RotateFlipType.Rotate180FlipNone;
-                        break;
-                    case 2:
-                        r = RotateFlipType.Rotate270FlipNone;
-                        break;
-                    default:
-                        r = RotateFlipType.RotateNoneFlipNone;
-                        break;
-                }
-                objects[k].RotateFlip(r);
-
-                while (randomX < 0 && randomY < 0)
-                {
-                    randomX = rnd.Next(0, imWidth - objects[k].Width);
-                    randomY = rnd.Next(0, imHeight - objects[k].Height);
-                }
-
-                posX.Add(randomX);
-                posY.Add(randomY);
-                boxWidth.Add(objects[k].Width);
-                boxHeight.Add(objects[k].Height);
-                for (int i = 0; i < objects[k].Width; i++)
-                {
-                    for (int j = 0; j < objects[k].Height; j++)
-                    {
-                        try
+                        for (int j = 0; j < 10000; j++)
                         {
-                            if (objects[k].GetPixel(i, j).A == 0)
-                                bm.SetPixel(randomX + i, randomY + j, bm.GetPixel(randomX + i, randomY + j));
-                            else
-                            {
-                                bm.SetPixel(randomX + i, randomY + j, objects[k].GetPixel(i, j));
-                            }
-
+                            int b = i * j + rnd.Next(0, i);
                         }
-                        catch (Exception e)
-                        {
+                    }
+                    rnd = new Random(DateTime.Now.Millisecond + imHeight);
+                    int randomFile = rnd.Next(0, fileNames.Length);
+                    texts.Add(fileNames[randomFile]);
+
+                    objects.Add(new Bitmap(fileNames[randomFile]));
+                    if (scaleTrue == 0)
+                    {
+                        objects[k] = new Bitmap(objects[k], new Size((int)((float)objects[k].Width / objectScale), (int)((float)objects[k].Height / objectScale)));
+                    }
+
+                    int randomX = -1;
+                    int randomY = -1;
+
+                    int rotate = rnd.Next(0, 4);
+                    RotateFlipType r;
+                    switch (rotate)
+                    {
+                        case 0:
+                            r = RotateFlipType.Rotate90FlipNone;
                             break;
-                        }
+                        case 1:
+                            r = RotateFlipType.Rotate180FlipNone;
+                            break;
+                        case 2:
+                            r = RotateFlipType.Rotate270FlipNone;
+                            break;
+                        default:
+                            r = RotateFlipType.RotateNoneFlipNone;
+                            break;
                     }
+                    objects[k].RotateFlip(r);
+
+                    int rotateEnable = rnd.Next(0, 5);
+
+                    while (randomX < 0 && randomY < 0)
+                    {
+                        randomX = rnd.Next(0, imWidth - objects[k].Width);
+                        randomY = rnd.Next(0, imHeight - objects[k].Height);
+                    }
+
+                    posX.Add(randomX);
+                    posY.Add(randomY);
+                    boxWidth.Add(objects[k].Width);
+                    boxHeight.Add(objects[k].Height);
+                    if (rotateEnable == 3)
+                    {
+                        int rotateAngleInt = rnd.Next(0, 450);
+                        float rotateAngle = (float)rotateAngleInt / 10.0f;
+                        g.RotateTransform(rotateAngle);
+                    }
+                    g.DrawImage(objects[k], new Point(randomX, randomY));
+
+                }
+                g.RotateTransform(0.0f);
+                int shadowEnable = rnd.Next(0, 5);
+                if (shadowEnable == 3)
+                {
+                    int alpha = rnd.Next(125, 200);
+                    Brush shadowbox = null;
+                    int color= rnd.Next(0, 5);
+                    switch (color)
+                    {
+                        case (0):
+                            shadowbox = new SolidBrush(Color.FromArgb( alpha,145,128,0));
+                            break;
+                        case (1):
+                            shadowbox = new SolidBrush(Color.FromArgb(alpha, 20,0,145));
+                            break;
+                        case (3):
+                            shadowbox = new SolidBrush(Color.FromArgb(alpha, 0, 0, 0));
+                            break;
+                        case (4):
+                            shadowbox = new SolidBrush(Color.FromArgb(alpha, 204, 27, 0));
+                            break;
+                    }
+                    g.FillRectangle(shadowbox, new Rectangle(0,0,bm.Width,bm.Height));
                 }
             }
-            for (int i = 0; i < posX.Count; i++)
+            if (generateBBoxFiles)
             {
-                bool add = true;
-                for (int j = i; j < posX.Count; j++)
+                for (int i = 0; i < posX.Count; i++)
                 {
+                    bool add = true;
+                    for (int j = i; j < posX.Count; j++)
+                    {
 
-                    if (posX[i] > posX[j] && posX[i] < posX[j] + boxWidth[j] && boxWidth[i] < boxWidth[j]
-                            && posY[i] > posY[j] && posY[i] < posY[j] + boxHeight[j] && boxHeight[i] < boxHeight[j])
-                    {
-                        add = false;
-                        //object under another
+                        if (posX[i] > posX[j] && posX[i] < posX[j] + boxWidth[j] && boxWidth[i] < boxWidth[j]
+                                && posY[i] > posY[j] && posY[i] < posY[j] + boxHeight[j] && boxHeight[i] < boxHeight[j])
+                        {
+                            add = false;
+                            //object under another
+                        }
+                        else
+                        {
+                            add = true;
+                        }
                     }
-                    else
+                    if (add)
                     {
-                        add = true;
-                    }
-                }
-                if (add)
-                {
-                    string input = getClassNumber(texts[i]) + " " + (float)(posX[i] + (boxWidth[i] / 2 + 1)) / (float)imWidth + " " + (float)(posY[i] + (boxHeight[i] / 2 + 1)) / (float)imHeight + " " + (float)boxWidth[i] / (float)imWidth + " " + (float)boxHeight[i] / (float)imHeight;
-                    if (!outText.Contains(input))
-                    {
-                        outText.Add(input);
+                        string input = getClassNumber(texts[i]) + " " + (float)(posX[i] + (boxWidth[i] / 2 + 1)) / (float)imWidth + " " + (float)(posY[i] + (boxHeight[i] / 2 + 1)) / (float)imHeight + " " + (float)boxWidth[i] / (float)imWidth + " " + (float)boxHeight[i] / (float)imHeight;
+                        if (!outText.Contains(input))
+                        {
+                            outText.Add(input);
+                        }
                     }
                 }
             }
@@ -244,31 +269,31 @@ namespace dataset_creator
 
         public int getClassNumber(string objectClass)
         {
-            if (objectClass.Contains("OBJECT_1"))
+            if (objectClass.Contains("euro_100"))
                 return 0;
-            else if (objectClass.Contains("OBJECT_2"))
+            else if (objectClass.Contains("euro_50"))
                 return 1;
-            else if (objectClass.Contains("OBJECT_3"))
+            else if (objectClass.Contains("euro_20"))
                 return 2;
-            else if (objectClass.Contains("OBJECT_4"))
+            else if (objectClass.Contains("euro_10"))
                 return 3;
-            else if (objectClass.Contains("OBJECT_5"))
+            else if (objectClass.Contains("euro_5"))
                 return 4;
-            else if (objectClass.Contains("OBJECT_6"))
+            else if (objectClass.Contains("euro_2"))
                 return 5;
-            else if (objectClass.Contains("OBJECT_7"))
+            else if (objectClass.Contains("euro_1"))
                 return 6;
-            else if (objectClass.Contains("OBJECT_8"))
+            else if (objectClass.Contains("cent_50"))
                 return 7;
-            else if (objectClass.Contains("OBJECT_9"))
+            else if (objectClass.Contains("cent_20"))
                 return 8;
-            else if (objectClass.Contains("OBJECT_10"))
+            else if (objectClass.Contains("cent_10"))
                 return 9;
-            else if (objectClass.Contains("OBJECT_11"))
+            else if (objectClass.Contains("cent_5"))
                 return 10;
-            else if (objectClass.Contains("OBJECT_12"))
+            else if (objectClass.Contains("cent_2"))
                 return 11;
-            else if (objectClass.Contains("OBJECT_13"))
+            else if (objectClass.Contains("cent_1"))
                 return 12;
 
             return -1;
